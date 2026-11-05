@@ -1,103 +1,26 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MYSTERY 60</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;background:#101522;color:#f4f2ed;font-family:system-ui,sans-serif}
-main{max-width:680px;margin:auto;padding:24px 18px 50px}
-header{padding:35px 0}
-small{color:#d8ad65;letter-spacing:2px}
-h1{font-size:46px;margin:12px 0}
-p{line-height:1.9}
-.card{background:#1c2638;border:1px solid #39465d;border-radius:16px;padding:20px;margin:18px 0}
-button{display:block;width:100%;padding:15px;margin:10px 0;border:1px solid #52617b;border-radius:10px;background:#293750;color:white;font-size:16px;text-align:left}
-.primary{background:#d8ad65;color:#171717;text-align:center}
-.hidden{display:none}
-.knowledge{border-left:3px solid #d8ad65;padding:10px 14px}
-</style>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MYSTERY 60｜60秒の謎。解けたら、もう一問。</title>
+<meta name="description" content="短編ホラー映画を体験するように読む、推理と恐怖の短編集。60秒の謎。解けたら、もう一問。">
+<meta name="theme-color" content="#0a0a0b">
+<meta property="og:title" content="MYSTERY 60">
+<meta property="og:description" content="60秒の謎。解けたら、もう一問。">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://notendo10-bit.github.io/mystery60/images/hero.webp">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230a0a0b'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23c9b48a' font-family='serif'%3E60%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<main>
-<header>
-<small>MYSTERY PROJECT</small>
-<h1>MYSTERY 60</h1>
-<p>60秒の謎。解けたら、もう一問。</p>
-</header>
-<section id="home" class="card">
-<h2>事件を選ぶ</h2>
-<div id="list"></div>
-</section>
-<section id="game" class="card hidden">
-<small id="genre"></small>
-<h2 id="title"></h2>
-<p id="story"></p>
-<h3>手がかり</h3>
-<div id="clues"></div>
-<h3>あなたの推理は？</h3>
-<div id="choices"></div>
-<div id="result" class="hidden"></div>
-<button id="back" class="primary hidden">事件一覧へ戻る</button>
-</section>
-</main>
-<script>
-const cases=[
-{title:"消えた足音",genre:"心理ミステリー",story:"深夜、古いアパートの廊下で足音が聞こえた。階段を上がり、三階の部屋の前で止まった。しかし三階の住人は一歩も外に出ていないという。",clues:["雨の夜だった","廊下の窓は少し開いていた","音は一定の間隔で同じ場所から聞こえた"],choices:["誰かが録音を流した","雨だれが手すりを叩いていた","住人が壁の中を歩いていた"],answer:1,explain:"正解は雨だれ。風で吹き込んだ雨粒が金属の手すりを叩いていた。",knowledge:"金属や空洞は音を反響させ、小さな音を大きく聞かせることがある。"},
-{title:"最後のメッセージ",genre:"日常の謎",story:"友人から「今、駅に着いた」と写真付きのメッセージが届いた。しかし待ち合わせ場所に友人は現れない。写真には駅の時計が写っていた。",clues:["写真の時計は17時を指している","メッセージの送信時刻は17時17分","駅の時計は正常に動いていた"],choices:["写真は以前に撮影されたもの","時計が17分進んでいた","スマホの時刻が狂っていた"],answer:0,explain:"正解は過去の写真。写真が添付されていても、その場で撮影されたとは限らない。",knowledge:"画像の送信時刻と撮影時刻は別物。"},
-{title:"窓辺の影",genre:"ホラー",story:"女性は毎晩23時、向かいの空き家の窓に人影を見る。ある夜、窓に白い紙を貼った。それから影は現れなくなった。",clues:["向かいの家は空き家","影は自分の部屋の明かりをつけた時だけ現れた","紙には何も書かれていない"],choices:["影は窓に映った自分だった","誰かが空き家に住んでいた","紙がおばけを封じた"],answer:0,explain:"正解は自分の姿。夜は室内が明るく屋外が暗いため、窓ガラスが鏡のようになる。",knowledge:"夜の窓は室内の光を反射する。"},
-{title:"消えた水",genre:"科学ミステリー",story:"研究室の机に置いたコップの水が、朝になると半分以下になっていた。誰も部屋に入っていない。コップにひびもない。",clues:["暖房は一晩中ついていた","コップは薄いガラス製","部屋は乾燥していた"],choices:["水がガラスを通り抜けた","水が蒸発した","床に穴があった"],answer:1,explain:"正解は蒸発。暖房で室温が上がり、乾燥した空気によって水が蒸発しやすくなった。",knowledge:"水は沸騰しなくても蒸発する。"},
-{title:"誰もいない部屋",genre:"論理ミステリー",story:"無人の部屋から電話がかかってきた。受話器を取ると、自分の声で「後ろを見るな」と聞こえた。だが部屋には誰もいないはずだった。",clues:["電話は録音機能付き","部屋の電源は切れていない","声は自分の声とそっくりだった"],choices:["未来の自分からの電話","録音された自分の声が再生された","幽霊が電話をかけた"],answer:1,explain:"正解は録音。電話機の予約再生機能などで、以前録音された声が流れた可能性がある。",knowledge:"聞き覚えのある声でも、本人がその場にいる証拠にはならない。"}
-];
-let cleared=JSON.parse(localStorage.getItem("m60clear")||"[]");
-let current=0;
-const $=id=>document.getElementById(id);
-function showList(){
-$("list").innerHTML="";
-cases.forEach((c,i)=>{
-let b=document.createElement("button");
-b.textContent="CASE "+(i+1)+"　"+c.title+(cleared.includes(i)?" ✓":"");
-b.onclick=()=>openCase(i);
-$("list").appendChild(b);
-});
-}
-function openCase(i){
-current=i;let c=cases[i];
-$("home").classList.add("hidden");
-$("game").classList.remove("hidden");
-$("genre").textContent=c.genre;
-$("title").textContent=c.title;
-$("story").textContent=c.story;
-$("clues").innerHTML=c.clues.map((x,n)=>"<p>"+(n+1)+". "+x+"</p>").join("");
-$("choices").innerHTML="";
-$("result").classList.add("hidden");
-$("back").classList.add("hidden");
-c.choices.forEach((x,n)=>{
-let b=document.createElement("button");
-b.textContent=["A","B","C"][n]+"　"+x;
-b.onclick=()=>answer(n);
-$("choices").appendChild(b);
-});
-}
-function answer(n){
-let c=cases[current],correct=n===c.answer;
-document.querySelectorAll("#choices button").forEach(b=>b.disabled=true);
-$("result").classList.remove("hidden");
-$("result").innerHTML="<h3>"+(correct?"正解。":"残念。")+"</h3><p>"+c.explain+"</p><div class='knowledge'><b>ひとくち知識</b><p>"+c.knowledge+"</p></div>";
-if(correct&&!cleared.includes(current)){
-cleared.push(current);
-localStorage.setItem("m60clear",JSON.stringify(cleared));
-}
-$("back").classList.remove("hidden");
-}
-$("back").onclick=()=>{
-$("game").classList.add("hidden");
-$("home").classList.remove("hidden");
-showList();
-};
-showList();
-</script>
+<div id="app" aria-live="off"></div>
+<noscript><p style="padding:24px;color:#ddd">このサイトで遊ぶには JavaScript を有効にしてください。</p></noscript>
+<dialog id="viewer" aria-label="画像の拡大表示">
+  <button type="button" id="viewer-close" aria-label="閉じる">閉じる</button>
+  <div id="viewer-scroll"><img id="viewer-img" alt=""></div>
+</dialog>
+<script src="js/cases.js"></script>
+<script src="js/app.js"></script>
 </body>
 </html>
