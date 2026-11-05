@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://notendo10-bit.github.io/mystery60/sitemap.xml

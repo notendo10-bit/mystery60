@@ -52,7 +52,7 @@ a { color: inherit; }
 .case-link {
   display: grid; grid-template-columns: 112px 1fr; gap: 14px; align-items: center;
   width: 100%; padding: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 4px;
-  text-align: left; overflow: hidden; transition: border-color .15s;
+  text-align: left; overflow: hidden; transition: border-color .15s; text-decoration: none;
 }
 .case-link:hover { border-color: var(--line-strong); }
 .case-link img { width: 112px; height: 84px; object-fit: cover; filter: brightness(.82); }
@@ -146,6 +146,20 @@ a { color: inherit; }
 .note summary { min-height: 46px; padding: 11px 14px; cursor: pointer; }
 .note p { margin: 0; padding: 0 14px 14px; }
 .next-row { display: grid; gap: 10px; margin: 30px 0 56px; }
+
+/* ---------- 共有 ---------- */
+.share { margin: 30px 0 0; }
+.share-label { margin: 0 0 10px; font-size: 13px; color: var(--muted); }
+.share-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.share-row .btn { min-height: 46px; padding: 10px 6px; font-size: 14px; text-decoration: none; }
+.complete .share { margin-top: 16px; font-family: var(--sans); }
+
+/* ---------- JSが動く前・検索エンジン向けの静的表示 ---------- */
+.prerender { max-width: var(--column); margin: 0 auto; padding: 24px 20px 56px; }
+.prerender h1 { font-family: var(--serif); font-weight: 500; line-height: 1.35; }
+.prerender h2 { font-size: 18px; font-weight: 500; margin-top: 28px; }
+.prerender img { width: 100%; height: auto; }
+.prerender li { margin-bottom: 10px; }
 
 /* ---------- 拡大表示 ---------- */
 dialog { width: 100vw; height: 100vh; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: #000; color: var(--text); }

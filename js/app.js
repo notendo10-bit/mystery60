@@ -71,6 +71,35 @@
   }
 
   /* ---------- ホーム ---------- */
+  function pageUrl(relative) {
+    return new URL(relative, document.baseURI).href;
+  }
+
+  // 真相に触れない文面だけを共有する
+  function shareBox(label, text, url) {
+    var encoded = encodeURIComponent(text);
+    var copyBtn = button("リンクをコピー", "btn", function () {
+      function done() { copyBtn.textContent = "コピーしました"; }
+      function fallback() { window.prompt("このリンクをコピーしてください", url); }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(done, fallback);
+      } else {
+        fallback();
+      }
+    });
+    function link(name, href) {
+      return el("a", { class: "btn", href: href, target: "_blank", rel: "noopener", text: name });
+    }
+    return el("div", { class: "share" }, [
+      el("p", { class: "share-label", text: label }),
+      el("div", { class: "share-row" }, [
+        link("Xで共有", "https://x.com/intent/post?text=" + encoded + "&url=" + encodeURIComponent(url)),
+        link("LINEで送る", "https://line.me/R/share?text=" + encodeURIComponent(text + "\n" + url)),
+        copyBtn
+      ])
+    ]);
+  }
+
   function renderHome() {
     var done = solvedCount();
     var nextIndex = firstUnsolved(0);
@@ -78,9 +107,9 @@
     var list = el("ol", { class: "case-list" }, CASES.map(function (c, i) {
       var record = progress.cases[c.id];
       return el("li", {}, [
-        el("button", {
-          type: "button", class: "case-link",
-          on: { click: function () { location.hash = "#/case/" + c.id; } }
+        el("a", {
+          class: "case-link", href: "c/" + c.id + "/",
+          on: { click: function (event) { event.preventDefault(); location.hash = "#/case/" + c.id; } }
         }, [
           el("img", { src: c.image.src.replace(".webp", "-thumb.webp"), alt: "", width: 224, height: 168, loading: "lazy" }),
           el("span", { class: "case-meta" }, [
@@ -110,7 +139,8 @@
         ]),
         nextIndex === -1 ? el("div", { class: "complete" }, [
           el("strong", { text: "全ての事件を見届けました。" }),
-          el("span", { text: "読み返すと、最初に見えなかったものが見えるかもしれません。" })
+          el("span", { text: "読み返すと、最初に見えなかったものが見えるかもしれません。" }),
+          shareBox("誰かに勧める", "短編ミステリー全" + CASES.length + "話を読み終えました。登録なし、無料。\n#MYSTERY60", pageUrl("./"))
         ]) : button(
           done === 0 ? "最初の事件を開く" : "続きから：" + CASES[nextIndex].title,
           "btn primary resume",
@@ -219,6 +249,13 @@
           el("summary", { text: "この話に出てきた、本当のこと" }),
           el("p", { text: c.note })
         ]) : null,
+        shareBox(
+          "この事件を誰かに解かせる（真相は共有されません）",
+          (status === "solved"
+            ? "「" + c.title + "」を" + seconds + "秒で解きました。"
+            : "「" + c.title + "」、解けませんでした。") + "\nあなたは解けますか。\n#MYSTERY60",
+          pageUrl("c/" + c.id + "/")
+        ),
         el("div", { class: "next-row" }, [
           nextButton,
           button("事件一覧へ", "btn wide", function () { location.hash = "#/"; })
@@ -357,7 +394,9 @@
   function route() {
     if (viewer.open) closeViewer();
     var match = location.hash.match(/^#\/case\/([\w-]+)/);
-    var index = match ? indexOfCase(match[1]) : -1;
+    // c/<id>/ のページをハッシュなしで開いたら、その事件から始める
+    var id = match ? match[1] : (location.hash ? null : window.M60_START);
+    var index = id ? indexOfCase(id) : -1;
     if (index >= 0) renderCase(index);
     else renderHome();
   }
