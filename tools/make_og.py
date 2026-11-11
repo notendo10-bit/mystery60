@@ -53,7 +53,7 @@ def card(src, name, title, sub, top_only=False):
     im.save(os.path.join(OUT, name + ".jpg"), "JPEG", quality=82, optimize=True, progressive=True)
 
 
-card(os.path.join(ROOT, "images", "hero.webp"), "home", "60秒の謎。", "解けたら、もう一問。短編ミステリー全10話")
+card(os.path.join(ROOT, "images", "hero.webp"), "home", "60秒の謎。", "解けたら、もう一問。短編ミステリー全11話")
 for c in cases:
     card(os.path.join(ROOT, "images", c["id"] + ".webp"), c["id"], c["title"],
          c["genre"] + "｜あなたは60秒で解けるか", top_only=c["id"] == "camera")
